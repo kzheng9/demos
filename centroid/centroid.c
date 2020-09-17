@@ -44,6 +44,18 @@ void centroid3(double* result, double* xs, double* ys, int n)
     result[1] = y/n;
 }
 
+void centroid4(double* restrict result, double* restrict xs, double* restrict ys, int n)
+{
+    double x = 0.0;
+    double y = 0.0;
+    for (int i = 0; i < n; ++i)
+        x += xs[i];
+    for (int i = 0; i < n; ++i)
+        y += ys[i];
+    result[0] = x/n;
+    result[1] = y/n;
+}
+
 int main()
 {
     int n = 1000000;
@@ -55,19 +67,29 @@ int main()
     double t = omp_get_wtime();
     for (int k = 0; k < 100; ++k)
         centroid1(result, xy, n);
-    printf("%g (%g, %g)\n", (omp_get_wtime()-t)/100, result[0], result[1]);
+    //printf("%g (%g, %g)\n", (omp_get_wtime()-t)/100, result[0], result[1]);
+    printf("%g\n", (omp_get_wtime()-t)/100);
 
     // Timing second option
     t = omp_get_wtime();
     for (int k = 0; k < 100; ++k)
         centroid2(result, xy, n);
-    printf("%g (%g, %g)\n", (omp_get_wtime()-t)/100, result[0], result[1]);
+    //printf("%g (%g, %g)\n", (omp_get_wtime()-t)/100, result[0], result[1]);
+    printf("%g\n", (omp_get_wtime()-t)/100);
 
     // Timing third option
     t = omp_get_wtime();
     for (int k = 0; k < 100; ++k)
         centroid3(result, xy, xy+n, n);
-    printf("%g (%g, %g)\n", (omp_get_wtime()-t)/100, result[0], result[1]);
+    //printf("%g (%g, %g)\n", (omp_get_wtime()-t)/100, result[0], result[1]);
+    printf("%g\n", (omp_get_wtime()-t)/100);
+
+    // Timing fourth option
+    t = omp_get_wtime();
+    for (int k = 0; k < 100; ++k)
+        centroid4(result, xy, xy+n, n);
+    //printf("%g (%g, %g)\n", (omp_get_wtime()-t)/100, result[0], result[1]);
+    printf("%g\n", (omp_get_wtime()-t)/100);
 
     free(xy);
 }
